@@ -1,0 +1,72 @@
+# BFP8 Converter
+
+A lightweight tool for converting between **BFLOAT16 (bfloat16)** and **BFP8 (bfloat8)** formats.
+
+This project is implemented based on [tt-metal](https://github.com/tenstorrent/tt-metal)'s [bfloat8.hpp](https://github.com/tenstorrent/tt-metal/blob/main/tt_metal/api/tt-metalium/bfloat8.hpp) and [blockfloat_common.hpp](https://github.com/tenstorrent/tt-metal/blob/main/tt_metal/api/tt-metalium/blockfloat_common.hpp) from a version before commit [`b6947b5`](https://github.com/tenstorrent/tt-metal/commit/b6947b510fee08e965545848590f97044a02d815#diff-34586446481f78d399b595901ec11c6120eebcff5359f9500094967701207338).
+
+## Usage
+
+### Build & Run
+```bash
+make
+./main
+```
+
+### `data.txt` Format
+- The first value is the default value.
+- The remaining values (up to 16) are the floating-point numbers to process.
+- Supports special values: `inf`, `-inf`, `nan`.
+
+#### Example `data.txt`
+```
+inf
+2.3
+3.2
+-inf
+nan
+```
+
+### Example Output
+```
+16 bfloat16 values before being packed into bfp8
+Bfloat16 Value	 Bit pattern
+   2.29688	01000000000100110000000000000000
+    3.1875	01000000010011000000000000000000
+      -inf	11111111100000000000000000000000
+       nan	01111111110000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+
+Packing into bfp8
+Shared exponent : 255
+Sign + Mantissa : 0 0 c0 60 40 40 40 40 40 40 40 40 40 40 40 40
+
+16 bfloat16 values after unpacking from bfp8
+Bfloat16 Value	 Bit pattern
+         0	00000000000000000000000000000000
+         0	00000000000000000000000000000000
+      -inf	11111111100000000000000000000000
+       nan	01111111110000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+       inf	01111111100000000000000000000000
+```
