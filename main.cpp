@@ -558,10 +558,10 @@ int main(void)
     clearLower16Bits(block);
 
     std::cout << "16 bfloat16 values before being packed into bfp8\n";
-    std::cout << std::setw(10) << "Bfloat16 Value\t Bit pattern\n";
+    std::cout << "Bfloat16 Value\tBit pattern\n";
     for(auto data : block) {
         auto u32_val = *reinterpret_cast<uint32_t*>(&data);
-        std::cout << std::setw(10) << data << "\t" <<std::bitset<32>(u32_val) << "\n";
+        std::cout << std::setw(14) << data << "\t" <<std::bitset<32>(u32_val) << "\n";
     }
     std::cout << "\nPacking into bfp8\n";
     auto [exponent, packed_data] = pack_fp32_vec_as_bfp_one_block<DataFormat::Bfp8_b>(block);
@@ -578,7 +578,7 @@ int main(void)
     std::cout << "\n\n";
 
     std::cout << "16 bfloat16 values after unpacking from bfp8\n";
-    std::cout << std::setw(10) << "Bfloat16 Value\t Bit pattern\n";
+    std::cout << "Bfloat16 Value\tBit pattern\n";
     for (auto data : packed_data) {
         std::vector<uint8_t> bytes(4);
         for (int i = 0; i < 4; ++i) {
@@ -587,7 +587,7 @@ int main(void)
             float bf16_val = *reinterpret_cast<float*>(&u32_val);
 
             auto u16_val = *reinterpret_cast<uint32_t*>(&bf16_val);
-            std::cout << std::setw(10) << bf16_val << "\t" << std::bitset<32>(u16_val) << "\n";
+            std::cout << std::setw(14) << bf16_val << "\t" << std::bitset<32>(u16_val) << "\n";
         }
     }
 
